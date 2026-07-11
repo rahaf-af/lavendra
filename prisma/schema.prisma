@@ -49,7 +49,7 @@ model User {
   passwordHash String     @map("password_hash")
   role         UserRole   @default(customer)
   status       UserStatus @default(active)
-  phone        String?
+  phone        String     @unique
   specialty    String?
   bio          String?
   createdAt    DateTime   @default(now()) @map("created_at")
