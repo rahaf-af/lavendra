@@ -1,5 +1,3 @@
-<<<<<<< user-register
-=======
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
@@ -74,5 +72,3 @@ export async function POST(request: NextRequest) {
             { status: 500 }
         )
     }
-}
->>>>>>> local

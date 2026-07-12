@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { Prisma } from "@prisma/client";
 import { prisma } from '@/lib/prisma'
-import { message } from "antd";
 
 
 const registerDataStandards = z.object({
