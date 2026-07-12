@@ -44,7 +44,8 @@ enum DayOfWeek {
 
 model User {
   id           Int        @id @default(autoincrement())
-  name         String
+  firstName    String
+  lastName     String
   email        String     @unique
   passwordHash String     @map("password_hash")
   role         UserRole   @default(customer)
