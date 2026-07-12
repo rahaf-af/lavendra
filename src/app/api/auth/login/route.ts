@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
         const token = await new SignJWT({ userId: user.id, role: user.role }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('2d').sign(JWT_SECRET)
         const response = NextResponse.json(
-            { success: true, message: 'USER_LOGGED_IN', data: { id: user.id, name: user.name, email: user.email, role: user.role } },
+            { success: true, message: 'USER_LOGGED_IN', data: { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role } },
             { status: 200 }
         )
         response.cookies.set('token', token, {
@@ -72,4 +72,3 @@ export async function POST(request: NextRequest) {
             { status: 500 }
         )
     }
-}
