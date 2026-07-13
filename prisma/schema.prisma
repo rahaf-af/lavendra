@@ -44,8 +44,8 @@ enum DayOfWeek {
 
 model User {
   id           Int        @id @default(autoincrement())
-  firstName    String
-  lastName     String
+  firstName    String     @map("first_name")
+  lastName     String     @map("last_name")
   email        String     @unique
   passwordHash String     @map("password_hash")
   role         UserRole   @default(customer)
@@ -66,42 +66,77 @@ model User {
 
   availability EmployeeAvailability[]
 
+  servicesOffered EmployeeService[]
+
   @@map("users")
 }
 
 model Service {
-  id              Int      @id @default(autoincrement())
-  nameAr          String   @map("name_ar")
-  nameEn          String   @map("name_en")
-  descriptionAr   String?  @map("description_ar")
-  descriptionEn   String?  @map("description_en")
-  price           Decimal  @db.Decimal(10, 2)
-  durationMinutes Int      @map("duration_minutes")
-  createdAt       DateTime @default(now()) @map("created_at")
+  id            Int      @id @default(autoincrement())
+  nameAr        String   @map("name_ar")
+  nameEn        String   @map("name_en")
+  descriptionAr String   @map("description_ar")
+  descriptionEn String   @map("description_en")
+  imageUrl      String   @map("image_url")
+  createdAt     DateTime @default(now()) @map("created_at")
 
-  appointments Appointment[]
+  variants ServiceVariant[]
+  employees EmployeeService[]
+
 
   @@map("services")
 }
 
-model Appointment {
-  id              Int               @id @default(autoincrement())
-  customerId      Int               @map("customer_id")
-  employeeId      Int               @map("employee_id")
-  serviceId       Int               @map("service_id")
-  appointmentDate DateTime          @map("appointment_date") @db.Date
-  appointmentTime DateTime          @map("appointment_time") @db.Time
-  status          AppointmentStatus @default(pending)
-  createdAt       DateTime          @default(now()) @map("created_at")
 
-  customer User    @relation("CustomerAppointments", fields: [customerId], references: [id])
-  employee User    @relation("EmployeeAppointments", fields: [employeeId], references: [id])
+model EmployeeService {
+  id         Int @id @default(autoincrement())
+  employeeId Int @map("employee_id")
+  serviceId  Int @map("service_id")
+
+  employee User    @relation(fields: [employeeId], references: [id])
   service  Service @relation(fields: [serviceId], references: [id])
+
+  @@unique([employeeId, serviceId]) 
+  @@map("employee_services")
+}
+
+
+model ServiceVariant {
+  id              Int      @id @default(autoincrement())
+  serviceId       Int      @map("service_id")
+  nameAr          String   @map("name_ar")
+  nameEn          String   @map("name_en")
+  price           Decimal  @db.Decimal(10, 2)
+  durationMinutes Int      @map("duration_minutes")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  service      Service       @relation(fields: [serviceId], references: [id])
+  appointments Appointment[]
+
+  @@map("service_variants")
+}
+
+model Appointment {
+  id               Int               @id @default(autoincrement())
+  customerId       Int               @map("customer_id")
+  employeeId       Int               @map("employee_id")
+  serviceVariantId Int               @map("service_variant_id")
+  appointmentDate  DateTime          @map("appointment_date") @db.Date
+  appointmentTime  DateTime          @map("appointment_time") @db.Time
+  status           AppointmentStatus @default(pending)
+  isHomeService    Boolean           @default(false) @map("is_home_service")
+  homeServiceFee   Decimal?          @db.Decimal(10, 2) @map("home_service_fee")
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  customer       User           @relation("CustomerAppointments", fields: [customerId], references: [id])
+  employee       User           @relation("EmployeeAppointments", fields: [employeeId], references: [id])
+  serviceVariant ServiceVariant @relation(fields: [serviceVariantId], references: [id])
 
   review Review?
 
   @@map("appointments")
 }
+
 
 model AbsenceRequest {
   id         Int           @id @default(autoincrement())
