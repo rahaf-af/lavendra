@@ -5,6 +5,7 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
 const routeRules: { pattern: RegExp; methods: string[]; roles: string[] }[] = [
     { pattern: /^\/api\/services(\/.*)?$/, methods: ["POST", "PATCH", "DELETE"], roles: ["manager"] },
+    { pattern: /^\/api\/employees(\/.*)?$/, methods: ["GET", "POST", "PATCH", "DELETE"], roles: ["manager"] },
 ]
 
 export async function middleware(request: NextRequest) {
@@ -48,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/api/services/:path*"]
+    matcher: ["/api/services/:path*", "/api/employees/:path*"]
 }
